@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  bitcoin-regtest:
+    image: bitcoin/bitcoin:27.0
+    container_name: bitcoin-regtest
+    ports:
+      - "18443:18443"
+    command: >
+      bitcoind -regtest -server=1
+      -rpcbind=0.0.0.0:18443
+      -rpcallowip=0.0.0.0/0
+      -rpcuser=rpcuser
+      -rpcpassword=rpcpass
+      -fallbackfee=0.0001
+      -printtoconsole=1
