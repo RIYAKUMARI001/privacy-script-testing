@@ -269,18 +269,17 @@ export class WalletHealthGenerator {
     }
   }
 
-  // Buck ke test code ke jaise proper descriptor extraction
   private async extractWalletKeys(wallet: BitcoinCore, index: number): Promise<{ xpub: string; xfp: string; bip32Path: string }> {
     try {
       const descriptors = await wallet.command('listdescriptors');
 
-      // p2pkh descriptor dhundho (Buck ke test code ke jaise)
+      // p2pkh descriptor 
       const desc = descriptors.descriptors.find((d: any) =>
         d.desc.includes('pkh') && d.desc.includes('/0/*')
       );
 
       if (desc) {
-        // Extract xfp, path, aur xpub from descriptor
+        // Extract xfp, path, and xpub from descriptor
         const match = desc.desc.match(/\[([a-fA-F0-9]{8})\/([^\]]+)\]([xtpub][a-zA-Z0-9]+)/);
         if (match) {
           const xfp = match[1];
@@ -312,7 +311,6 @@ export class WalletHealthGenerator {
     console.log(`   Creating multiple multisig addresses...`);
     const addresses = [];
 
-    // Buck ke test code ke jaise multiple addresses banate hain
     for (let i = 0; i < 4; i++) {
       const pubkeys = [];
       for (const signer of signers) {
@@ -370,7 +368,7 @@ export class WalletHealthGenerator {
       wallet: walletName
     });
 
-    // Buck ke test code ke jaise multisig descriptor import karte hain
+    //  multisig descriptor import 
     await this.importMultisigDescriptor(watcherWallet, signers);
 
     return watcherWallet;
@@ -383,10 +381,10 @@ export class WalletHealthGenerator {
     console.log(`    Importing multisig descriptor...`);
 
     try {
-      // Sorted xpubs for multisig (Buck ke test code ke jaise)
+      // Sorted xpubs for multisig 
       const sortedXpubs = signers.map(s => s.xpub).sort();
 
-      // P2WSH multisig descriptor banate hain
+      // P2WSH multisig descriptor 
       const multisigDescriptor = `wsh(sortedmulti(2,${sortedXpubs.map(xpub => `${xpub}/0/*`).join(',')}))`;
 
       await watcherWallet.command('importdescriptors', [{
@@ -437,14 +435,14 @@ export class WalletHealthGenerator {
         }
       }
     } else {
-      // Buck ke test code ke jaise har address ko 2 BTC bhejte hain
+      
       for (const address of addresses) {
         await coordinatorWallet.command('sendtoaddress', address, 2.0);
         console.log(`    Sent 2 BTC to ${address.substring(0, 20)}...`);
       }
     }
 
-    // Transactions confirm karne ke liye blocks mine karte hain
+    // Transactions confirm 
     const minerAddress = await coordinatorWallet.command('getnewaddress');
     await this.baseClient.command('generatetoaddress', 6, minerAddress);
 
@@ -648,7 +646,7 @@ export class WalletHealthGenerator {
       extendedPublicKeys: signers.map(signer => ({
         name: signer.name.replace(/_/g, ' '),
         xpub: signer.xpub,
-        bip32Path: signer.bip32Path, // Real path use karte hain
+        bip32Path: signer.bip32Path, // Real path 
         xfp: signer.xfp,
         method: 'text'
       })),
