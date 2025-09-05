@@ -15,3 +15,14 @@ services:
       -rpcpassword=${BITCOIN_RPC_PASSWORD}
       -fallbackfee=0.0001
       -printtoconsole=1
+      -txindex=1
+    volumes:
+      - bitcoin_data:/home/bitcoin/.bitcoin
+    healthcheck:
+      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcuser=${BITCOIN_RPC_USER}", "-rpcpassword=${BITCOIN_RPC_PASSWORD}", "getblockchaininfo"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  bitcoin_data:
